@@ -46,7 +46,7 @@ p {
 
 .api-control {
   display: grid;
-  grid-template-columns: minmax(260px, 420px) auto auto;
+  grid-template-columns: minmax(240px, 360px) minmax(150px, 220px) auto auto;
   align-items: center;
   gap: 10px;
 }

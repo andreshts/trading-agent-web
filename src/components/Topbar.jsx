@@ -6,11 +6,21 @@ export default function Topbar({
   executionMode,
   apiBase,
   onApiBaseChange,
+  apiKey,
+  onApiKeyChange,
   onRefresh,
   loading,
   liveRefreshActive,
+  liveConnectionStatus,
   lastUpdatedAt,
 }) {
+  const liveLabel = (() => {
+    if (liveConnectionStatus === 'open') return 'Live WS';
+    if (liveConnectionStatus === 'reconnecting') return 'Reconectando…';
+    if (liveConnectionStatus === 'connecting') return 'Conectando…';
+    return liveRefreshActive ? 'Polling 2s' : 'Manual';
+  })();
+  const liveClass = liveConnectionStatus === 'open' || liveRefreshActive ? 'active' : '';
   return (
     <header className="topbar">
       <div>
@@ -24,11 +34,19 @@ export default function Topbar({
           onChange={event => onApiBaseChange(event.target.value)}
           aria-label="URL base del API"
         />
+        <input
+          className="form-control"
+          type="password"
+          value={apiKey}
+          onChange={event => onApiKeyChange(event.target.value)}
+          placeholder="API key"
+          aria-label="API key"
+        />
         <button className="btn btn-dark" onClick={onRefresh} disabled={loading}>
           Refrescar
         </button>
-        <div className={`live-status ${liveRefreshActive ? 'active' : ''}`}>
-          <span>{liveRefreshActive ? 'Live 2s' : 'Manual'}</span>
+        <div className={`live-status ${liveClass}`}>
+          <span>{liveLabel}</span>
           <small>{formatUpdatedAt(lastUpdatedAt)}</small>
         </div>
       </div>

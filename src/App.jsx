@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DEFAULT_API_BASE } from './constants.js';
+import { DEFAULT_API_BASE, DEFAULT_API_KEY } from './constants.js';
 import { useApi } from './api/client.js';
 import { useAsyncAction } from './hooks/useAsyncAction.js';
 import { useDashboardData } from './hooks/useDashboardData.js';
@@ -18,12 +18,13 @@ import AuditList from './components/AuditList.jsx';
 
 export default function App() {
   const [apiBase, setApiBase] = useState(DEFAULT_API_BASE);
+  const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
   const [killReason, setKillReason] = useState('Pausa desde la web');
 
-  const api = useApi(apiBase);
+  const api = useApi(apiBase, apiKey);
   const { loading, error, runAction } = useAsyncAction();
 
-  const dashboard = useDashboardData(api, runAction);
+  const dashboard = useDashboardData(api, runAction, apiBase, apiKey);
   const {
     health,
     status,
@@ -37,6 +38,7 @@ export default function App() {
     lastUpdatedAt,
     liveError,
     liveRefreshActive,
+    liveConnectionStatus,
     refreshAll,
   } = dashboard;
 
@@ -105,9 +107,12 @@ export default function App() {
         executionMode={executionMode}
         apiBase={apiBase}
         onApiBaseChange={setApiBase}
+        apiKey={apiKey}
+        onApiKeyChange={setApiKey}
         onRefresh={() => refreshAll()}
         loading={loading}
         liveRefreshActive={liveRefreshActive}
+        liveConnectionStatus={liveConnectionStatus}
         lastUpdatedAt={lastUpdatedAt}
       />
 
