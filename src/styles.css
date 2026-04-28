@@ -85,7 +85,7 @@ p {
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
   margin-bottom: 16px;
 }
@@ -292,36 +292,215 @@ p {
   background: #fee2e2;
 }
 
+.audit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.audit-chip {
+  border: 1px solid #d9dee8;
+  background: #ffffff;
+  color: #475569;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.audit-chip:hover {
+  border-color: #94a3b8;
+  color: #1f2937;
+}
+
+.audit-chip.active {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: #f8fafc;
+}
+
 .audit-list {
   display: grid;
+  gap: 4px;
+}
+
+.audit-row {
+  border: 1px solid #eef0f4;
+  border-left-width: 3px;
+  border-radius: 6px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.audit-row.tone-good {
+  border-left-color: #16a34a;
+}
+
+.audit-row.tone-bad {
+  border-left-color: #dc2626;
+}
+
+.audit-row.tone-warn {
+  border-left-color: #d97706;
+}
+
+.audit-row.tone-muted {
+  border-left-color: #cbd5e1;
+}
+
+.audit-row.tone-plain {
+  border-left-color: #cbd5e1;
+}
+
+.audit-row-summary {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 22px minmax(150px, max-content) minmax(0, 1fr) 78px;
+  align-items: baseline;
   gap: 10px;
-}
-
-.audit-list details {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 10px 12px;
-  background: #fbfdff;
-}
-
-.audit-list summary {
+  padding: 8px 12px;
+  background: transparent;
+  border: 0;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.audit-row-summary:hover {
+  background: #f8fafc;
+}
+
+.audit-icon {
+  font-size: 0.95rem;
+  text-align: center;
+  color: #475569;
+}
+
+.audit-row.tone-good .audit-icon {
+  color: #15803d;
+}
+
+.audit-row.tone-bad .audit-icon {
+  color: #b91c1c;
+}
+
+.audit-row.tone-warn .audit-icon {
+  color: #b45309;
+}
+
+.audit-label {
   font-weight: 650;
+  color: #1f2937;
+  white-space: nowrap;
 }
 
-.audit-list time {
+.audit-detail {
+  color: #4b5563;
+  font-size: 0.86rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audit-time {
   color: #64748b;
-  font-size: 0.84rem;
-  font-weight: 450;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-.audit-list .json-block {
-  margin-top: 10px;
-  max-height: 280px;
+.audit-row-body {
+  padding: 10px 12px 12px;
+  border-top: 1px solid #eef0f4;
+  background: #f8fafc;
+}
+
+.audit-event-type {
+  display: block;
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+.audit-row-body .json-block {
+  margin: 0;
+  max-height: 320px;
+}
+
+.health-banner-stack {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.health-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #ffffff;
+}
+
+.health-banner div {
+  display: grid;
+  gap: 2px;
+}
+
+.health-banner strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+.health-banner span {
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.health-banner-icon {
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.health-banner.tone-bad {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.health-banner.tone-bad strong {
+  color: #b91c1c;
+}
+
+.health-banner.tone-warn {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.health-banner.tone-warn strong {
+  color: #b45309;
+}
+
+.health-banner.tone-info {
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+
+.health-banner.tone-info strong {
+  color: #0369a1;
+}
+
+.metric-card.muted {
+  border-color: #e5e7eb;
+}
+
+.metric-card.muted strong {
+  color: #475569;
 }
 
 @media (max-width: 1100px) {

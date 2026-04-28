@@ -3,10 +3,50 @@ import MetricCard from './ui/MetricCard.jsx';
 import Badge from './ui/Badge.jsx';
 import { formatMoney } from '../utils/format.js';
 import { executionLabel } from '../utils/labels.js';
+import { computeRunnerMetrics, findLastDecision } from '../utils/runnerMetrics.js';
 
-export default function StatusGrid({ health, status, account, executionMode, runnerStatus }) {
+function formatTime(value) {
+  if (!value) return null;
+  try {
+    return new Date(value).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  } catch {
+    return null;
+  }
+}
+
+export default function StatusGrid({ health, status, account, executionMode, runnerStatus, audit = [] }) {
   const executionIsLive = executionMode === 'binance_live';
   const executionIsExchange = executionMode !== 'paper';
+  const metrics = computeRunnerMetrics(audit);
+  const lastDecision = findLastDecision(audit);
+  const consecutiveErrors = runnerStatus?.consecutive_errors || 0;
+  const breakerTripped = Boolean(runnerStatus?.circuit_breaker_tripped);
+
+  const runnerNote = (() => {
+    if (breakerTripped) return 'Circuit breaker disparado';
+    if (consecutiveErrors > 0) return `${consecutiveErrors} errores consecutivos`;
+    const lastTick = formatTime(runnerStatus?.last_tick_at);
+    return lastTick ? `Último tick ${lastTick}` : 'Sin ticks';
+  })();
+  const runnerTone = breakerTripped ? 'bad' : consecutiveErrors > 0 ? 'warn' : runnerStatus?.running ? 'good' : '';
+
+  const lastDecisionNote = lastDecision
+    ? `${lastDecision.approved ? '✓' : '·'} ${lastDecision.reason.slice(0, 48)}${
+        lastDecision.reason.length > 48 ? '…' : ''
+      }`
+    : 'Sin decisiones aún';
+  const lastDecisionTone = !lastDecision
+    ? 'muted'
+    : lastDecision.approved
+    ? 'good'
+    : lastDecision.action === 'HOLD' || lastDecision.action === 'SKIP'
+    ? ''
+    : 'warn';
+
   return (
     <section className="status-grid">
       <MetricCard
@@ -43,10 +83,26 @@ export default function StatusGrid({ health, status, account, executionMode, run
         tone={status?.kill_switch?.active ? 'bad' : ''}
       />
       <MetricCard
-        title="Autonomo"
+        title="Autónomo"
         value={<Badge active={Boolean(runnerStatus?.running)} onLabel="Corriendo" offLabel="Detenido" />}
-        note={runnerStatus?.last_tick_at ? new Date(runnerStatus.last_tick_at).toLocaleTimeString() : 'Sin ticks'}
-        tone={runnerStatus?.running ? 'good' : ''}
+        note={runnerNote}
+        tone={runnerTone}
+      />
+      <MetricCard
+        title="Actividad runner"
+        value={`${metrics.total} ticks`}
+        note={
+          metrics.total
+            ? `✓ ${metrics.executed} · ✗ ${metrics.rejected} · · ${metrics.holds} · ⏭ ${metrics.skipped}`
+            : 'Sin actividad reciente'
+        }
+        tone={metrics.errors > 0 ? 'warn' : ''}
+      />
+      <MetricCard
+        title="Última decisión"
+        value={lastDecision ? lastDecision.action : '—'}
+        note={lastDecisionNote}
+        tone={lastDecisionTone}
       />
     </section>
   );

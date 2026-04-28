@@ -8,6 +8,7 @@ import { useManualSignal } from './hooks/useManualSignal.js';
 import { useTradingActions } from './hooks/useTradingActions.js';
 import Topbar from './components/Topbar.jsx';
 import ModeBanner from './components/ModeBanner.jsx';
+import RunnerHealthBanner from './components/RunnerHealthBanner.jsx';
 import StatusGrid from './components/StatusGrid.jsx';
 import AutomaticPanel from './components/AutomaticPanel.jsx';
 import AssistedOrderPanel from './components/AssistedOrderPanel.jsx';
@@ -120,6 +121,7 @@ export default function App() {
       {liveError ? <div className="alert alert-warning">{liveError}</div> : null}
 
       <ModeBanner executionMode={executionMode} />
+      <RunnerHealthBanner runnerStatus={runnerStatus} status={status} />
 
       <StatusGrid
         health={health}
@@ -127,6 +129,7 @@ export default function App() {
         account={account}
         executionMode={executionMode}
         runnerStatus={runnerStatus}
+        audit={audit}
       />
 
       <main className="main-grid">
