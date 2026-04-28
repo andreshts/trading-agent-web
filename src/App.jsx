@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DEFAULT_API_BASE, DEFAULT_API_KEY } from './constants.js';
 import { useApi } from './api/client.js';
 import { useAsyncAction } from './hooks/useAsyncAction.js';
@@ -12,15 +12,34 @@ import RunnerHealthBanner from './components/RunnerHealthBanner.jsx';
 import StatusGrid from './components/StatusGrid.jsx';
 import AutomaticPanel from './components/AutomaticPanel.jsx';
 import AssistedOrderPanel from './components/AssistedOrderPanel.jsx';
+import RiskConfigPanel from './components/RiskConfigPanel.jsx';
 import SystemPanel from './components/SystemPanel.jsx';
 import OutputPanel from './components/OutputPanel.jsx';
 import PositionsTable from './components/PositionsTable.jsx';
 import AuditList from './components/AuditList.jsx';
+import { useEquityHistory } from './hooks/useEquityHistory.js';
+
+function readDebugMode() {
+  try {
+    return window.localStorage.getItem('trading-agent-debug-mode') === '1';
+  } catch {
+    return false;
+  }
+}
 
 export default function App() {
   const [apiBase, setApiBase] = useState(DEFAULT_API_BASE);
   const [apiKey, setApiKey] = useState(DEFAULT_API_KEY);
   const [killReason, setKillReason] = useState('Pausa desde la web');
+  const [debugMode, setDebugMode] = useState(readDebugMode);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('trading-agent-debug-mode', debugMode ? '1' : '0');
+    } catch {
+      // localStorage may be unavailable (e.g., privacy mode); ignore.
+    }
+  }, [debugMode]);
 
   const api = useApi(apiBase, apiKey);
   const { loading, error, runAction } = useAsyncAction();
@@ -46,6 +65,7 @@ export default function App() {
   const account = status?.account;
   const executionMode = status?.execution_mode || 'paper';
   const openUnrealizedPnl = positions.reduce((total, position) => total + (position.unrealized_pnl || 0), 0);
+  const { samples: equitySamples } = useEquityHistory(account?.equity);
 
   const signalForm = useSignalForm();
   const { signalRequest, updateSignalRequest, autonomousInterval, setAutonomousInterval, buildSignalRequest } =
@@ -115,6 +135,8 @@ export default function App() {
         liveRefreshActive={liveRefreshActive}
         liveConnectionStatus={liveConnectionStatus}
         lastUpdatedAt={lastUpdatedAt}
+        debugMode={debugMode}
+        onDebugModeChange={setDebugMode}
       />
 
       {error ? <div className="alert alert-danger">{error}</div> : null}
@@ -130,6 +152,7 @@ export default function App() {
         executionMode={executionMode}
         runnerStatus={runnerStatus}
         audit={audit}
+        equitySamples={equitySamples}
       />
 
       <main className="main-grid">
@@ -140,6 +163,7 @@ export default function App() {
           onAutonomousIntervalChange={setAutonomousInterval}
           runnerStatus={runnerStatus}
           loading={loading}
+          debugMode={debugMode}
           onGenerateSignal={generateSignal}
           onRunAgent={runAgent}
           onRunTick={runTick}
@@ -147,29 +171,41 @@ export default function App() {
           onStopAutonomous={stopAutonomous}
         />
 
-        <AssistedOrderPanel
-          manualSignal={manualSignal}
-          onManualSignalChange={updateManualSignal}
-          quantity={quantity}
-          onQuantityChange={setQuantity}
-          limits={limits}
-          status={status}
-          executionMode={executionMode}
-          assistedSignalReady={assistedSignalReady}
-          loading={loading}
-          onValidateRisk={validateRisk}
-          onExecuteTrade={executeTrade}
-        />
+        <div className="side-panels">
+          <SystemPanel
+            killReason={killReason}
+            onKillReasonChange={setKillReason}
+            executionMode={executionMode}
+            loading={loading}
+            onSystemPost={systemPost}
+          />
 
-        <SystemPanel
-          killReason={killReason}
-          onKillReasonChange={setKillReason}
-          executionMode={executionMode}
-          loading={loading}
-          onSystemPost={systemPost}
-        />
+          <RiskConfigPanel api={api} onAfterChange={() => refreshAll()} />
 
-        <OutputPanel selectedOutput={selectedOutput} onSelectedOutputChange={setSelectedOutput} data={selectedData} />
+          {debugMode ? (
+            <AssistedOrderPanel
+              manualSignal={manualSignal}
+              onManualSignalChange={updateManualSignal}
+              quantity={quantity}
+              onQuantityChange={setQuantity}
+              limits={limits}
+              status={status}
+              executionMode={executionMode}
+              assistedSignalReady={assistedSignalReady}
+              loading={loading}
+              onValidateRisk={validateRisk}
+              onExecuteTrade={executeTrade}
+            />
+          ) : null}
+
+          {debugMode ? (
+            <OutputPanel
+              selectedOutput={selectedOutput}
+              onSelectedOutputChange={setSelectedOutput}
+              data={selectedData}
+            />
+          ) : null}
+        </div>
       </main>
 
       <PositionsTable

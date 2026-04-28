@@ -1,6 +1,7 @@
 import React from 'react';
 import MetricCard from './ui/MetricCard.jsx';
 import Badge from './ui/Badge.jsx';
+import Sparkline from './ui/Sparkline.jsx';
 import { formatMoney } from '../utils/format.js';
 import { executionLabel } from '../utils/labels.js';
 import { computeRunnerMetrics, findLastDecision } from '../utils/runnerMetrics.js';
@@ -18,7 +19,15 @@ function formatTime(value) {
   }
 }
 
-export default function StatusGrid({ health, status, account, executionMode, runnerStatus, audit = [] }) {
+export default function StatusGrid({
+  health,
+  status,
+  account,
+  executionMode,
+  runnerStatus,
+  audit = [],
+  equitySamples = [],
+}) {
   const executionIsLive = executionMode === 'binance_live';
   const executionIsExchange = executionMode !== 'paper';
   const metrics = computeRunnerMetrics(audit);
@@ -68,7 +77,12 @@ export default function StatusGrid({ health, status, account, executionMode, run
       />
       <MetricCard
         title="Equity"
-        value={formatMoney(account?.equity)}
+        value={
+          <span className="metric-with-spark">
+            <span>{formatMoney(account?.equity)}</span>
+            {equitySamples.length >= 2 ? <Sparkline samples={equitySamples} /> : null}
+          </span>
+        }
         note={`PnL ${formatMoney(account?.realized_pnl)}`}
       />
       <MetricCard

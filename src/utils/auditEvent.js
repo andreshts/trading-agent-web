@@ -172,6 +172,31 @@ export function summarizeAuditEvent(event) {
         category: 'system',
       };
 
+    case 'risk_config_updated': {
+      const changes = p.changes || {};
+      const fields = Object.keys(changes);
+      const detail = fields
+        .slice(0, 4)
+        .map(k => `${k}=${changes[k]}`)
+        .join(', ');
+      return {
+        icon: '⚙',
+        label: 'Configuración de riesgo actualizada',
+        detail: fields.length > 4 ? `${detail}…` : detail,
+        tone: '',
+        category: 'system',
+      };
+    }
+
+    case 'risk_config_reset':
+      return {
+        icon: '↺',
+        label: 'Configuración de riesgo restablecida',
+        detail: 'Valores volvieron a los del .env',
+        tone: '',
+        category: 'system',
+      };
+
     default:
       return {
         icon: '·',

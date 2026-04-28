@@ -13,6 +13,8 @@ export default function Topbar({
   liveRefreshActive,
   liveConnectionStatus,
   lastUpdatedAt,
+  debugMode,
+  onDebugModeChange,
 }) {
   const liveLabel = (() => {
     if (liveConnectionStatus === 'open') return 'Live WS';
@@ -45,6 +47,14 @@ export default function Topbar({
         <button className="btn btn-dark" onClick={onRefresh} disabled={loading}>
           Refrescar
         </button>
+        <label className={`debug-toggle ${debugMode ? 'active' : ''}`} title="Mostrar paneles manuales y respuesta cruda">
+          <input
+            type="checkbox"
+            checked={Boolean(debugMode)}
+            onChange={event => onDebugModeChange(event.target.checked)}
+          />
+          <span>Debug</span>
+        </label>
         <div className={`live-status ${liveClass}`}>
           <span>{liveLabel}</span>
           <small>{formatUpdatedAt(lastUpdatedAt)}</small>
