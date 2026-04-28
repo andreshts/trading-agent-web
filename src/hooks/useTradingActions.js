@@ -74,6 +74,7 @@ export function useTradingActions({
         body: JSON.stringify({
           symbols: [signalRequest.symbol],
           timeframe: signalRequest.timeframe,
+          market_type: signalRequest.market_type,
           market_context: signalRequest.market_context,
           interval_seconds: Number(autonomousInterval) || 60,
           open_new_position: Boolean(signalRequest.open_new_position),

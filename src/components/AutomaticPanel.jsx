@@ -4,6 +4,7 @@ import Field from './ui/Field.jsx';
 function RunnerSummary({ runnerStatus }) {
   const symbols = (runnerStatus?.symbols || []).join(', ') || '—';
   const timeframe = runnerStatus?.timeframe || '—';
+  const marketType = runnerStatus?.market_type || 'spot';
   const cadence = runnerStatus?.align_to_candle_close
     ? `cierre de vela ${timeframe}`
     : `cada ${runnerStatus?.interval_seconds || '?'} s`;
@@ -13,6 +14,10 @@ function RunnerSummary({ runnerStatus }) {
       <div>
         <span>Símbolos</span>
         <strong>{symbols}</strong>
+      </div>
+      <div>
+        <span>Mercado</span>
+        <strong>{marketType.toUpperCase()}</strong>
       </div>
       <div>
         <span>Temporalidad</span>
@@ -57,7 +62,7 @@ export default function AutomaticPanel({
 
       {showConfigForm ? (
         <div className="row g-3">
-          <div className="col-md-4">
+          <div className="col-md-3">
             <Field label="Símbolo">
               <input
                 className="form-control"
@@ -66,7 +71,20 @@ export default function AutomaticPanel({
               />
             </Field>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
+            <Field label="Mercado">
+              <select
+                className="form-select"
+                value={signalRequest.market_type}
+                onChange={e => onSignalChange('market_type', e.target.value)}
+              >
+                <option value="spot">Spot</option>
+                <option value="futures">Futures</option>
+                <option value="margin">Margin</option>
+              </select>
+            </Field>
+          </div>
+          <div className="col-md-3">
             <Field label="Temporalidad">
               <input
                 className="form-control"
@@ -75,7 +93,7 @@ export default function AutomaticPanel({
               />
             </Field>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <Field label="Precio opcional">
               <input
                 className="form-control"

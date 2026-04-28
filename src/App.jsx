@@ -142,7 +142,7 @@ export default function App() {
       {error ? <div className="alert alert-danger">{error}</div> : null}
       {liveError ? <div className="alert alert-warning">{liveError}</div> : null}
 
-      <ModeBanner executionMode={executionMode} />
+      <ModeBanner executionMode={executionMode} marketType={status?.trading_market_type || 'spot'} />
       <RunnerHealthBanner runnerStatus={runnerStatus} status={status} />
 
       <StatusGrid
@@ -150,6 +150,7 @@ export default function App() {
         status={status}
         account={account}
         executionMode={executionMode}
+        marketType={status?.trading_market_type || 'spot'}
         runnerStatus={runnerStatus}
         audit={audit}
         equitySamples={equitySamples}

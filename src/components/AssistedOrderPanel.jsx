@@ -45,6 +45,19 @@ export default function AssistedOrderPanel({
           </Field>
         </div>
         <div className="col-md-3">
+          <Field label="Mercado">
+            <select
+              className="form-select"
+              value={manualSignal.market_type || 'spot'}
+              onChange={e => onManualSignalChange('market_type', e.target.value)}
+            >
+              <option value="spot">Spot</option>
+              <option value="futures">Futures</option>
+              <option value="margin">Margin</option>
+            </select>
+          </Field>
+        </div>
+        <div className="col-md-3">
           <Field label="Accion">
             <select
               className="form-select"
@@ -54,6 +67,18 @@ export default function AssistedOrderPanel({
               <option>BUY</option>
               <option>SELL</option>
               <option>HOLD</option>
+            </select>
+          </Field>
+        </div>
+        <div className="col-md-3">
+          <Field label="Lado">
+            <select
+              className="form-select"
+              value={manualSignal.position_side || 'long'}
+              onChange={e => onManualSignalChange('position_side', e.target.value)}
+            >
+              <option value="long">Long</option>
+              <option value="short">Short</option>
             </select>
           </Field>
         </div>

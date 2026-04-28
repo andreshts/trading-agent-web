@@ -24,6 +24,7 @@ export function useSignalForm() {
     return {
       symbol: signalRequest.symbol,
       timeframe: signalRequest.timeframe,
+      market_type: signalRequest.market_type,
       market_context: signalRequest.market_context,
     };
   }

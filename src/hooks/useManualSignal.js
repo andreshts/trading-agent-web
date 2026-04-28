@@ -25,6 +25,9 @@ export function useManualSignal() {
       stop_loss: signal.stop_loss ?? '',
       take_profit: signal.take_profit ?? '',
       risk_amount: signal.risk_amount ?? '',
+      market_type: signal.market_type || 'spot',
+      intent: signal.intent || 'open',
+      position_side: signal.position_side || (signal.action === 'SELL' ? 'short' : 'long'),
       reason: signal.reason ?? '',
     });
   }

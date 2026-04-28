@@ -39,6 +39,8 @@ export default function PositionsTable({
               <th>ID</th>
               <th>Simbolo</th>
               <th>Accion</th>
+              <th>Mercado</th>
+              <th>Lado</th>
               <th>Estado</th>
               <th>Modo</th>
               <th>Orden</th>
@@ -57,6 +59,8 @@ export default function PositionsTable({
                 <td>{position.id}</td>
                 <td>{position.symbol}</td>
                 <td>{position.action}</td>
+                <td>{(position.market_type || 'spot').toUpperCase()}</td>
+                <td>{(position.position_side || 'long').toUpperCase()}</td>
                 <td>
                   <Badge active={position.status === 'OPEN'} onLabel="OPEN" offLabel="CLOSED" />
                 </td>
@@ -106,7 +110,7 @@ export default function PositionsTable({
             ))}
             {!positions.length ? (
               <tr>
-                <td colSpan="13" className="empty-state">
+                <td colSpan="15" className="empty-state">
                   No hay posiciones para este filtro.
                 </td>
               </tr>

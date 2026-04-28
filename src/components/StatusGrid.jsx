@@ -24,6 +24,7 @@ export default function StatusGrid({
   status,
   account,
   executionMode,
+  marketType = 'spot',
   runnerStatus,
   audit = [],
   equitySamples = [],
@@ -72,7 +73,11 @@ export default function StatusGrid({
       <MetricCard
         title="Ejecucion"
         value={executionLabel(executionMode)}
-        note={executionIsExchange ? `Exchange ${status?.exchange_configured ? 'configurado' : 'sin keys'}` : 'Local'}
+        note={
+          executionIsExchange
+            ? `${marketType.toUpperCase()} · ${status?.exchange_configured ? 'keys ok' : 'sin keys'}`
+            : `${marketType.toUpperCase()} local`
+        }
         tone={executionIsLive ? 'bad' : executionIsExchange ? 'warn' : ''}
       />
       <MetricCard
