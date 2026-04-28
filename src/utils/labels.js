@@ -5,7 +5,7 @@ export function executionLabel(mode) {
 }
 
 export function defaultContextFor(symbol) {
-  return `Analiza ${symbol.toUpperCase()} usando las velas e indicadores calculados por el backend. Propón BUY solo si hay una ventaja clara y define stop_loss y take_profit coherentes con el precio actual. Si no hay información suficiente, responde HOLD.`;
+  return `Analiza ${symbol.toUpperCase()} usando las velas e indicadores calculados por el backend. Propón BUY o SELL solo si hay una ventaja clara y define stop_loss y take_profit coherentes con el precio actual. Si no hay información suficiente, responde HOLD.`;
 }
 
 export function signalFieldLabel(field) {

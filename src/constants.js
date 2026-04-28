@@ -5,7 +5,7 @@ export const initialSignalRequest = {
   symbol: 'BTCUSDT',
   timeframe: '15M',
   market_context:
-    'Analiza BTCUSDT usando las velas e indicadores calculados por el backend. Propón BUY solo si hay una ventaja clara y define stop_loss y take_profit coherentes con el precio actual. Si no hay información suficiente, responde HOLD.',
+    'Analiza BTCUSDT usando las velas e indicadores calculados por el backend. Propón BUY o SELL solo si hay una ventaja clara y define stop_loss y take_profit coherentes con el precio actual. Si no hay información suficiente, responde HOLD.',
   current_price: '',
   open_new_position: true,
 };
