@@ -150,6 +150,8 @@ export function useDashboardData(api, runAction, apiBase, apiKey) {
         case 'hello':
         case 'pong':
         case 'ping':
+          setLastUpdatedAt(new Date());
+          break;
         default:
           break;
       }
